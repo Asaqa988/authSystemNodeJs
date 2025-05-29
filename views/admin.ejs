@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+</head>
+<body>
+  <h1>Admin Panel</h1>
+
+  <h2>All Users</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(user => { %>
+        <tr>
+          <td><%= user.username %></td>
+          <td><%= user.email %></td>
+          <td><%= user.role %></td>
+          <td>
+            <form action="/admin/delete/<%= user._id %>" method="POST" style="display:inline;">
+              <button type="submit">Delete</button>
+            </form>
+            <form action="/admin/update/<%= user._id %>" method="POST" style="display:inline;">
+              <input type="text" name="username" placeholder="New username" required />
+              <input type="email" name="email" placeholder="New email" required />
+              <input type="text" name="role" placeholder="Role" required />
+              <button type="submit">Update</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <h2>Add New User</h2>
+  <form action="/admin/add" method="POST">
+    <label>Username:</label><br />
+    <input type="text" name="username" required /><br />
+
+    <label>Email:</label><br />
+    <input type="email" name="email" required /><br />
+
+    <label>Password:</label><br />
+    <input type="password" name="password" required /><br />
+
+    <label>Role:</label><br />
+    <input type="text" name="role" required /><br /><br />
+
+    <button type="submit">Add User</button>
+  </form>
+</body>
+</html>
