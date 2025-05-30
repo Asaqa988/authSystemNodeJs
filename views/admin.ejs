@@ -1,13 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <title>Admin Panel</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f8f8f8; }
+    h1 { color: #333; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background-color: #f0f0f0; }
+    form { margin-bottom: 20px; }
+    input, select, button { padding: 5px; margin-right: 10px; }
+    a { text-decoration: none; color: blue; }
+  </style>
 </head>
 <body>
   <h1>Admin Panel</h1>
 
-  <h2>All Users</h2>
-  <table border="1">
+  <h3>Add New User</h3>
+  <form action="/admin/add" method="POST">
+    <input name="username" placeholder="Username" required />
+    <input name="email" type="email" placeholder="Email" required />
+    <input name="password" type="password" placeholder="Password" required />
+    <select name="role" required>
+      <option value="user">User</option>
+      <option value="admin">Admin</option>
+    </select>
+    <button type="submit">Add</button>
+  </form>
+
+  <h3>All Users</h3>
+  <table>
     <thead>
       <tr>
         <th>Username</th>
@@ -23,36 +46,26 @@
           <td><%= user.email %></td>
           <td><%= user.role %></td>
           <td>
-            <form action="/admin/delete/<%= user._id %>" method="POST" style="display:inline;">
-              <button type="submit">Delete</button>
-            </form>
-            <form action="/admin/update/<%= user._id %>" method="POST" style="display:inline;">
-              <input type="text" name="username" placeholder="New username" required />
-              <input type="email" name="email" placeholder="New email" required />
-              <input type="text" name="role" placeholder="Role" required />
+            <form action="/admin/update/<%= user._id %>" method="POST" style="display:inline-block;">
+              <input name="username" value="<%= user.username %>" required />
+              <input name="email" value="<%= user.email %>" required />
+              <select name="role">
+                <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>User</option>
+                <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+              </select>
               <button type="submit">Update</button>
+            </form>
+            <form action="/admin/delete/<%= user._id %>" method="POST" style="display:inline-block;">
+              <button type="submit" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
             </form>
           </td>
         </tr>
-      <% }); %>
+      <% }) %>
     </tbody>
   </table>
 
-  <h2>Add New User</h2>
-  <form action="/admin/add" method="POST">
-    <label>Username:</label><br />
-    <input type="text" name="username" required /><br />
-
-    <label>Email:</label><br />
-    <input type="email" name="email" required /><br />
-
-    <label>Password:</label><br />
-    <input type="password" name="password" required /><br />
-
-    <label>Role:</label><br />
-    <input type="text" name="role" required /><br /><br />
-
-    <button type="submit">Add User</button>
-  </form>
+  <br />
+  <a href="/dashboard">← Back to Dashboard</a> |
+  <a href="/logout">Logout</a>
 </body>
 </html>

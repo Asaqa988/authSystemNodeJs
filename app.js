@@ -1,29 +1,30 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-
 const cookieParser = require("cookie-parser");
 
-const app = express();
-
+const app = express(); // ✅ Declare app first
 const authRoutes = require("./routes/auth");
 
-mongoose.connect(process.env.MONGO_URI).then(() => {
-  console.log("MongoDb is Connected");
-});
+// Middleware
+app.use(express.urlencoded({ extended: true })); // for form POST
+app.use(express.json()); // for raw JSON POST
+app.use(cookieParser());
+app.use(express.static("public")); // Optional: for serving CSS/images
 
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB is connected"))
+  .catch(err => console.error("MongoDB connection error:", err));
 
+// Set EJS as view engine
+app.set("view engine", "ejs");
 
-app.set('view engine','ejs')
+// Routes
+app.use("/", authRoutes);
 
-app.use(express.urlencoded({extended:true}))
-
-app.use(cookieParser())
-
-app.use("/",authRoutes)
-
-
-
-app.listen(process.env.PORT, () => {
-  console.log(`server is running on localhost port ${process.env.PORT} `);
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
